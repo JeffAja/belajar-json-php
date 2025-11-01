@@ -1,0 +1,311 @@
+openapi: "3.0.2"
+info:
+  title: API Hotel
+  description: >
+    API untuk mengelola data kamar, tamu, dan reservasi pada sistem manajemen hotel.
+    Dokumentasi ini dibuat menggunakan OpenAPI Specification (Swagger).
+  version: "1.0.0"
+  contact:
+    name: Admin Hotel
+    email: admin@hotelku.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+servers:
+  - url: https://api.hotelku.com/v1
+    description: Production Server
+  - url: https://staging.hotelku.com/v1
+    description: Staging Server (Pengujian)
+
+tags:
+  - name: Kamar
+    description: Endpoint untuk mengelola data kamar hotel
+  - name: Tamu
+    description: Endpoint untuk mengelola data tamu hotel
+  - name: Reservasi
+    description: Endpoint untuk mengelola data reservasi kamar
+
+paths:
+  /kamar:
+    get:
+      tags: [Kamar]
+      summary: Mendapatkan daftar semua kamar
+      responses:
+        '200':
+          description: Daftar kamar berhasil diambil
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Kamar'
+    post:
+      tags: [Kamar]
+      summary: Menambahkan kamar baru
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KamarInput'
+      responses:
+        '201':
+          description: Kamar berhasil ditambahkan
+
+  /kamar/{id}:
+    get:
+      tags: [Kamar]
+      summary: Mendapatkan detail kamar berdasarkan ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID kamar
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Detail kamar berhasil diambil
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Kamar'
+        '404':
+          description: Kamar tidak ditemukan
+    put:
+      tags: [Kamar]
+      summary: Memperbarui data kamar
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KamarInput'
+      responses:
+        '200':
+          description: Data kamar berhasil diperbarui
+    delete:
+      tags: [Kamar]
+      summary: Menghapus kamar berdasarkan ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Kamar berhasil dihapus
+
+  /tamu:
+    get:
+      tags: [Tamu]
+      summary: Mendapatkan daftar semua tamu
+      responses:
+        '200':
+          description: Daftar tamu berhasil diambil
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tamu'
+    post:
+      tags: [Tamu]
+      summary: Menambahkan tamu baru
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TamuInput'
+      responses:
+        '201':
+          description: Tamu berhasil ditambahkan
+
+  /reservasi:
+    get:
+      tags: [Reservasi]
+      summary: Mendapatkan daftar semua reservasi
+      responses:
+        '200':
+          description: Daftar reservasi berhasil diambil
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Reservasi'
+    post:
+      tags: [Reservasi]
+      summary: Membuat reservasi baru
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReservasiInput'
+      responses:
+        '201':
+          description: Reservasi berhasil dibuat
+
+  /reservasi/{id}:
+    get:
+      tags: [Reservasi]
+      summary: Mendapatkan detail reservasi
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID reservasi
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Detail reservasi berhasil diambil
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reservasi'
+        '404':
+          description: Reservasi tidak ditemukan
+    put:
+      tags: [Reservasi]
+      summary: Memperbarui data reservasi
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReservasiInput'
+      responses:
+        '200':
+          description: Reservasi berhasil diperbarui
+    delete:
+      tags: [Reservasi]
+      summary: Menghapus data reservasi
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Reservasi berhasil dihapus
+
+components:
+  schemas:
+    Kamar:
+      type: object
+      properties:
+        id:
+          type: string
+        nomor:
+          type: string
+        tipe:
+          type: string
+        harga_per_malam:
+          type: number
+        tersedia:
+          type: boolean
+      example:
+        id: "K001"
+        nomor: "101"
+        tipe: "Deluxe"
+        harga_per_malam: 500000
+        tersedia: true
+
+    KamarInput:
+      type: object
+      required: [nomor, tipe, harga_per_malam]
+      properties:
+        nomor:
+          type: string
+        tipe:
+          type: string
+        harga_per_malam:
+          type: number
+        tersedia:
+          type: boolean
+
+    Tamu:
+      type: object
+      properties:
+        id:
+          type: string
+        nama:
+          type: string
+        email:
+          type: string
+        telepon:
+          type: string
+      example:
+        id: "T001"
+        nama: "Budi Santoso"
+        email: "budi@mail.com"
+        telepon: "081234567890"
+
+    TamuInput:
+      type: object
+      required: [nama, email]
+      properties:
+        nama:
+          type: string
+        email:
+          type: string
+        telepon:
+          type: string
+
+    Reservasi:
+      type: object
+      properties:
+        id:
+          type: string
+        id_tamu:
+          type: string
+        id_kamar:
+          type: string
+        tanggal_checkin:
+          type: string
+          format: date
+        tanggal_checkout:
+          type: string
+          format: date
+        total_harga:
+          type: number
+      example:
+        id: "R001"
+        id_tamu: "T001"
+        id_kamar: "K001"
+        tanggal_checkin: "2025-10-25"
+        tanggal_checkout: "2025-10-27"
+        total_harga: 1000000
+
+    ReservasiInput:
+      type: object
+      required: [id_tamu, id_kamar, tanggal_checkin, tanggal_checkout]
+      properties:
+        id_tamu:
+          type: string
+        id_kamar:
+          type: string
+        tanggal_checkin:
+          type: string
+          format: date
+        tanggal_checkout:
+          type: string
+          format: date
